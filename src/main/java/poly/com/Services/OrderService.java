@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import poly.com.Entity.Cart;
 import poly.com.Entity.Order;
 import poly.com.Entity.Order_Detail;
-import poly.com.Repository.OrderDetailRepo;
 import poly.com.Repository.OrderRepo;
 
 import java.time.LocalDate;
@@ -67,5 +66,9 @@ public class OrderService {
     public List<Order> getAllOrdersByUserId(int userId) {
         return  orderRepo.getOrdersByUser(userId);
     }
+
+public List<Order> getOrders(){
+        return (List<Order>) orderRepo.findAll();
+}
 
 }

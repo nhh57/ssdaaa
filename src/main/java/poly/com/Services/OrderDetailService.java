@@ -6,6 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import poly.com.Entity.Order_Detail;
 import poly.com.Repository.OrderDetailRepo;
 
+import java.util.List;
+
 @Service
 public class OrderDetailService {
     @Resource
@@ -16,4 +18,8 @@ public class OrderDetailService {
         repo.save(orderDetail);
     }
 
+
+    public Order_Detail findOrderDetailByOrderId(int orderId) {
+        return repo.findByOrder_Id(orderId);
+    }
 }

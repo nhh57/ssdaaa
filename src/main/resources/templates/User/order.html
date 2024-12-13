@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document</title>
+    <link rel="stylesheet" th:href="@{/CSS/order.css}">
+</head>
+<body>
+<div class="container mt-5">
+    <div class="d-flex justify-content-center row">
+        <div class="col-md-10">
+            <div class="rounded">
+                <div class="table-responsive table-borderless">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th class="text-center">
+                                <div class="toggle-btn">
+                                    <div class="inner-circle"></div>
+                                </div>
+                            </th>
+                            <th>Order #</th>
+                            <th>Company name</th>
+                            <th>status</th>
+                            <th>Total</th>
+                            <th>Created</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody class="table-body">
+                        <tr class="cell-1" th:each="order : ${orders}">
+                            <td class="text-center">
+                                <div class="toggle-btn">
+                                    <div class="inner-circle"></div>
+                                </div>
+                            </td>
+                            <td th:text="${order.id}">#SO-13487</td>
+                            <td>Gasper Antunes</td>
+                            <td th:text="${order.status}"><span class="badge badge-success">Fullfilled</span></td>
+                            <td th:text="${order.total_amount}">$2674.00</td>
+                            <td th:text="${order.order_date}"></td>
+                            <td><i class="fa fa-ellipsis-h text-black-50"></i></td>
+                        </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+<script>
+    $(document).ready(function(){
+
+        $('.toggle-btn').click(function() {
+            $(this).toggleClass('active').siblings().removeClass('active');
+        });
+
+    });
+</script>
