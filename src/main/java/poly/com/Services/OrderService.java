@@ -24,8 +24,6 @@ public class OrderService {
 
     @Resource
     OrderDetailService orderDetailService;
-    @Resource
-    OrderDetailRepo orderDetailRepo;
 
     @Transactional
     public void save(Integer userId) {
@@ -51,7 +49,7 @@ public class OrderService {
                 .total_amount(totalAmount).build();
         orderRepo.save(order);
 
-        log.info("save carts id:{}", carts);
+//        log.info("save carts id:{}", carts);
         carts.forEach(cart -> {
             Order_Detail orderDetail = Order_Detail.builder()
                     .order(order)
@@ -63,6 +61,11 @@ public class OrderService {
 
         int userID = carts.get(0).getUser().getId();
         cartService.deleteCardByUserId(userID);
+    }
+
+
+    public List<Order> getAllOrdersByUserId(int userId) {
+        return  orderRepo.getOrdersByUser(userId);
     }
 
 }

@@ -93,12 +93,12 @@ public class PaymentController {
             int userId = getCurrentUserId();
             log.info("userId::", userId);
             orderService.save(userId);
-            return "redirect:/product";
+            return "redirect:/order";
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return "redirect:/cart";
+        return "redirect:/order";
     }
 
 
