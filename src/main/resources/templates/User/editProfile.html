@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Profile</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .profile-img-container {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      overflow: hidden;
+      margin-bottom: 15px;
+    }
+    .profile-img-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container mt-5">
+  <h2>Edit Profile</h2>
+  
+  <!-- Form sử dụng Spring Form Binding -->
+  <form action="#" th:action="@{/profile/save}" th:object="${user}" method="post" enctype="multipart/form-data">
+    
+    <!-- Profile Image -->
+    <div class="form-group text-center">
+      <label for="profileImage">Profile Image</label>
+      <div class="profile-img-container">
+        <img th:src="@{${user.profileImageUrl}}" id="previewImg" alt="Profile Image">
+      </div>
+      <input type="file" class="form-control-file" id="profileImage" name="profileImage" onchange="previewImage(event)">
+    </div>
+
+    <!-- Name -->
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" id="name" th:field="*{name}" placeholder="Enter your name" required>
+    </div>
+
+    <!-- Email -->
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" class="form-control" id="email" th:field="*{email}" placeholder="Enter your email" required>
+    </div>
+
+    <!-- Date of Birth -->
+    <div class="form-group">
+      <label for="dob">Date of Birth</label>
+      <input type="date" class="form-control" id="dob" th:field="*{dob}" required>
+    </div>
+
+    <!-- Phone Number -->
+    <div class="form-group">
+      <label for="phone">Phone Number</label>
+      <input type="tel" class="form-control" id="phone" th:field="*{phone}" placeholder="Enter your phone number" required>
+    </div>
+
+    <!-- Save Button -->
+    <button type="submit" class="btn btn-primary btn-block">Save</button>
+  </form>
+</div>
+
+<script>
+  // Preview the image when uploaded
+  function previewImage(event) {
+    const reader = new FileReader();
+    reader.onload = function() {
+      const output = document.getElementById('previewImg');
+      output.src = reader.result;
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

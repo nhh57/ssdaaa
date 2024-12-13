@@ -1,0 +1,52 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+
+  .container {
+    max-width: 400px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  .form-group label {
+    font-weight: bold;
+  }
+
+  .btn-google {
+    background-color: #db4437;
+    color: #fff;
+    border: none;
+  }
+  .btn-google:hover {
+    background-color: #c1351d;
+  }
+
+  .form-footer {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .form-footer a {
+    color: #007bff;
+  }
+  
+  .form-footer a:hover {
+    text-decoration: underline;
+  }
+
+  .icon-google {
+    font-size: 1.2rem;
+    margin-right: 10px;
+  }

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title th:text="${title}">DATN Vietnam</title>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<link th:href="@{/CSS/index.css}" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <h4 style="font-size: 18px; font-weight: 900;">DATN 単純</h4>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/index}">Trang chủ</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/product}">Sản phẩm</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/Abouts}">Giới thiệu</a></li>
+                
+                <li class="nav-item" th:if="${username != null}">
+                    <div class="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span th:text="${fullname}"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" th:href="@{/profile}">Chỉnh sửa hồ sơ</a></li>
+                            <li><a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a></li>
+                        </ul>
+                    </div>
+                </li>
+
+                <!-- Nếu chưa đăng nhập -->
+                <li class="nav-item" th:if="${username == null}">
+                    <a class="nav-link" th:href="@{/login}">Đăng nhập</a>
+                </li>
+
+                <!-- Nếu role là Admin, hiển thị menu Quản trị -->
+                <li class="nav-item dropdown" th:if="${role == 'ROLE_ADMIN'}">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" id="adminDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        Quản trị
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="adminDropdown">
+                        <li><a class="dropdown-item" th:href="@{/admin/users}">Quản lý người dùng</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/products}">Quản lý sản phẩm</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/orders}">Quản lý Đơn hàng</a></li>
+                        <li><a class="dropdown-item" th:href="@{/admin/statistics}">Thống kê</a></li>
+                    </ul>
+                </li>
+
+                <!-- Nếu role là User, hiển thị icon giỏ hàng -->
+               <li class="nav-item" th:if="${role == 'ROLE_USER'}">
+    <a class="nav-link position-relative" th:href="@{/cart}">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
+              th:text="${cartItemCount}">0</span>
+    </a>
+</li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+
+	<div class="container my-5">
+		<div id="heroCarousel" class="carousel slide" data-bs-ride="carousel">
+			<div class="carousel-inner">
+				<div class="carousel-item active">
+					<img
+						src="https://cdn.shopify.com/s/files/1/0605/9461/8587/collections/MUJI_WritingMaterials_Banner.jpg?v=1703326834"
+						alt="Slide 1">
+				</div>
+				<div class="carousel-item">
+					<img
+						src="https://cdn.shopify.com/s/files/1/0605/9461/8587/collections/4549337268142_02_1260_3000x_5c8a2aae-236e-47f3-9efd-68b512eedf66.webp?v=1702812931"
+						alt="Slide 2">
+				</div>
+				<div class="carousel-item">
+					<img
+						src="https://www.muji.com/public/media/jp/img/top_banner/1640_storage_241001.jpg?im=Resize,width=800"
+						alt="Slide 3">
+				</div>
+			</div>
+			<button class="carousel-control-prev" type="button"
+				data-bs-target="#heroCarousel" data-bs-slide="prev">
+				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+				<span class="visually-hidden">Previous</span>
+			</button>
+			<button class="carousel-control-next" type="button"
+				data-bs-target="#heroCarousel" data-bs-slide="next">
+				<span class="carousel-control-next-icon" aria-hidden="true"></span>
+				<span class="visually-hidden">Next</span>
+			</button>
+		</div>
+	</div>
+
+	<div class="container my-5">
+		<div class="row">
+			<div class="col-md-3">
+				<div class="info-box"
+					style="background-image: url('https://www.muji.com/vn/img/panel/Web_Towel.jpg');">
+					<h5>毎日使えるスカーフ</h5>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="info-box"
+					style="background-image: url('https://www.muji.com/vn/img/panel/Web_Careers.jpg');">
+					<h5>ここで働きます</h5>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="info-box"
+					style="background-image: url('https://www.muji.com/vn/img/panel/Web_App.jpg');">
+					<h5>Info Box 3</h5>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="info-box"
+					style="background-image: url('https://www.muji.com/vn/img/panel/Web_Shopee.jpg');">
+					<h5>Info Box 4</h5>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="info-box"
+					style="background-image: url('https://www.muji.com/vn/img/panel/Web_Lazada.jpg');">
+					<h5>Info Box 5</h5>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="info-box"
+					style="background-image: url('https://www.muji.com/vn/img/panel/Web_FB.jpg');">
+					<h5>Info Box 6</h5>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<div class="info-box"
+					style="background-image: url('https://www.muji.com/vn/img/panel/Web_IG.jpg');">
+					<h5>Info Box 7</h5>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container my-5">
+		<h5 class="text-left mb-4">Sản phẩm</h5>
+		<div class="row">
+			<div class="col-md-2">
+				<div class="product-box d-flex align-items-center">
+					<img src="https://img.muji.net/img/item/4550182716122_50.jpg"
+						alt="Category 1">
+					<p class="ms-3">TÚI VÀ GIÀY</p>
+				</div>
+			</div>
+			<div class="col-md-2">
+				<div class="product-box d-flex align-items-center">
+					<img src="https://img.muji.net/img/item/4550002555696_50.jpg"
+						alt="Category 2">
+					<p class="ms-3">VĂN PHÒNG PHẨM</p>
+				</div>
+			</div>
+			<div class="col-md-2">
+				<div class="product-box d-flex align-items-center">
+					<img src="https://img.muji.net/img/item/4547315117048_50.jpg"
+						alt="Category 3">
+					<p class="ms-3">NỘI THẤT</p>
+				</div>
+			</div>
+			<div class="col-md-2">
+				<div class="product-box d-flex align-items-center">
+					<img src="https://www.muji.net/img/item/4550182146615_01_1260.jpg"
+						alt="Category 4">
+					<p class="ms-3">BÁNH KẸO</p>
+				</div>
+			</div>
+			<div class="col-md-2">
+				<div class="product-box d-flex align-items-center">
+					<img src="https://img.muji.net/img/item/4934761390772_50.jpg"
+						alt="Category 5">
+					<p class="ms-3">BÁNH KẸO</p>
+				</div>
+			</div>
+			<div class="col-md-2">
+				<div class="product-box d-flex align-items-center">
+					<img src="https://www.muji.net/img/item/4550002854089_01_1260.jpg"
+						alt="Category 6">
+					<p class="ms-3">ĐỒ UỐNG</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container my-5">
+		<h5 class="text-left mb-4">Cửa hàng</h5>
+		<div class="map-container">
+			<iframe
+				src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.6230864152545!2d106.62928934917152!3d10.782731692332823!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752843b20e67b9%3A0x3f8e29ef567cbf6a!2sMUJI%20Vietnam!5e0!3m2!1svi!2s!4v1635378405903!5m2!1svi!2s"
+				width="100%" height="100%" style="border: 0;" allowfullscreen=""
+				loading="lazy"></iframe>
+		</div>
+	</div>
+
+	<footer class="py-4 text-center text-white">
+		<p>&copy; 2024 MUJI Vietnam. All rights reserved.</p>
+	</footer>
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

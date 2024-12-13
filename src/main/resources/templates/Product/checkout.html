@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Checkout Page</title>
+</head>
+<body>
+    <h1>Checkout</h1>
+
+    <form action="/checkout/submit" method="post">
+        <!-- Thông tin khách hàng -->
+        <h2>Customer Information</h2>
+        <label for="fullname">Full Name:</label>
+        <input type="text" id="fullname" name="fullname" th:value="${user.hoten}" placeholder="Enter your name" /><br>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" th:value="${user.email}" placeholder="Enter your email" /><br>
+
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address" th:value="${user.dchi}" placeholder="Enter your address" /><br>
+
+        <label for="phone">Phone Number:</label>
+        <input type="text" id="phone" name="phone" th:value="${user.sdt}" placeholder="Enter your phone number" /><br>
+
+        <!-- Giỏ hàng -->
+        <h2>Cart Items</h2>
+        <ul>
+            <li th:each="item : ${cartItems}">
+                Product: <span th:text="${item.product.name}">Product Name</span><br>
+                Quantity: <span th:text="${item.quantity}">1</span><br>
+                Unit Price: <span th:text="${item.unit_price}">100.0</span><br>
+            </li>
+        </ul>
+
+        <!-- Mã giảm giá -->
+        <h2>Discount Code</h2>
+        <label for="discountCode">Discount Code:</label>
+        <input type="text" id="discountCode" name="discountCode" placeholder="Enter discount code" />
+        <button type="button" onclick="applyDiscount()">Apply Discount</button>
+
+        <div th:if="${discountApplied}">
+            Discount Applied: <span th:text="${discountPercentage}">0</span>%
+        </div>
+
+        <!-- Phương thức thanh toán -->
+        <h2>Payment Method</h2>
+        <label>Choose Payment Method:</label><br>
+        <input type="radio" name="paymentMethod" value="Cash" /> Cash<br>
+        <input type="radio" name="paymentMethod" value="VNPAY" /> VNPAY<br>
+
+        <!-- Phương thức vận chuyển -->
+        <h2>Shipping Method</h2>
+        <label>Choose Shipping Method:</label><br>
+        <input type="radio" name="shippingMethod" value="Economy" /> Economy<br>
+        <input type="radio" name="shippingMethod" value="Express" /> Express<br>
+        <input type="radio" name="shippingMethod" value="Fast" /> Fast<br>
+
+        <button type="submit">Checkout</button>
+    </form>
+
+    <script>
+        function applyDiscount() {
+            const discountCode = document.getElementById('discountCode').value;
+            fetch(`/checkout/applyDiscount?discountCode=${discountCode}`, {
+                method: 'POST'
+            })
+            .then(response => response.text())
+            .then(message => alert(message));
+        }
+    </script>
+</body>
+</html>

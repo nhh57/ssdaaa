@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Bootstrap 5 Table with Add and Edit Row Feature</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <link th:href="@{/CSS/index.css}" rel="stylesheet" type="text/css">
+    <style>
+        body {
+            color: #404E67;
+            background: #F5F7FA;
+            font-family: 'Open Sans', sans-serif;
+        }
+        .table-wrapper {
+            max-width: 100%;
+            margin: 30px auto;
+            background: #fff;
+            padding: 20px;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, .05);
+        }
+        .table-title {
+            padding-bottom: 10px;
+            margin: 0 0 10px;
+        }
+        .table-title h2 {
+            margin: 6px 0 0;
+            font-size: 22px;
+        }
+        .table-title .add-new {
+            float: right;
+            height: 30px;
+            font-weight: bold;
+            font-size: 12px;
+            text-shadow: none;
+            min-width: 100px;
+            border-radius: 50px;
+            line-height: 13px;
+        }
+        .table-title .add-new i {
+            margin-right: 4px;
+        }
+        table.table {
+            width: 100%;
+            table-layout: auto;
+        }
+        table.table tr th, table.table tr td {
+            border-color: #e9e9e9;
+            word-wrap: break-word;
+        }
+        table.table th:last-child {
+            width: 100px;
+        }
+        table.table td a {
+            cursor: pointer;
+            display: inline-block;
+            margin: 0 5px;
+            min-width: 24px;
+        }
+        table.table td a.add {
+            color: #27C46B;
+        }
+        table.table td a.edit {
+            color: #FFC107;
+        }
+        table.table td a.delete {
+            color: #E34724;
+        }
+        table.table td i {
+            font-size: 19px;
+        }
+        table.table .form-control {
+            height: 40px;
+            line-height: 40px;
+            box-shadow: none;
+            border-radius: 4px;
+        }
+        table.table .form-control.error {
+            border-color: #f50000;
+        }
+        @media (max-width: 767px) {
+            .table-wrapper {
+                overflow-x: auto;
+            }
+            .table-wrapper .table {
+                min-width: 700px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <h4 style="font-size: 18px; font-weight: 900;">DATN 単純</h4>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item"><a class="nav-link" th:href="@{/index}">Trang chủ</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/product}">Sản phẩm</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/Abouts}">Giới thiệu</a></li>
+                <li class="nav-item" th:if="${username != null}">
+                    <div class="dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span th:text="${fullname}"></span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" th:href="@{/profile}">Chỉnh sửa hồ sơ</a></li>
+                            <li><a class="dropdown-item" th:href="@{/logout}">Đăng xuất</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="nav-item" th:if="${username == null}"><a class="nav-link" th:href="@{/login}">Đăng nhập</a></li>
+                <li class="nav-item" th:if="${role == 'ROLE_ADMIN'}">
+                    <a class="nav-link" th:href="@{/admin/users}">Quản trị</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <div class="table-wrapper">
+        <div class="table-title">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h2>Quản lý sản phẩm</h2>
+                </div>
+                <div class="col-sm-6 text-end">
+                    <!-- Nút mở modal để thêm sản phẩm mới -->
+                    <a href="#addProductModal" class="btn btn-success add-new" data-bs-toggle="modal">
+                        <i class="fa fa-plus"></i> Thêm Sản Phẩm
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table for Users -->
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Họ Tên</th>
+                    <th>Email</th>
+                    <th>Ngày Sinh</th>
+                    <th>Địa Chỉ</th>
+                    <th>Số Điện Thoại</th>
+                    <th>Hình Ảnh</th>
+                    <th>Hành Động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.id}"></td>
+                    <td th:text="${user.hoten}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td th:text="${#temporals.format(user.ng_sinh, 'dd/MM/yyyy')}"></td>
+                    <td th:text="${user.dchi}"></td>
+                    <td th:text="${user.sdt}"></td>
+                    <td><img th:src="@{${user.anh}}" alt="Hình Ảnh" style="width: 50px; height: 50px;"></td>
+                    <td>
+                        <a th:data-id="${user.id}" th:data-hoten="${user.hoten}" th:data-email="${user.email}" th:data-ng_sinh="${#temporals.format(user.ng_sinh, 'yyyy-MM-dd')}" th:data-dchi="${user.dchi}" th:data-sdt="${user.sdt}" th:data-anh="${user.anh}" class="edit" title="Sửa" data-bs-toggle="modal" data-bs-target="#editUserModal"><i class="fa fa-pencil"></i></a>
+                        <a th:href="@{/admin/deleteUser(id=${user.id})}" class="delete" title="Xóa"><i class="fa fa-trash"></i></a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal for Adding User -->
+    <div id="addUserModal" class="modal fade" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form th:action="@{/admin/saveUser}" method="post" enctype="multipart/form-data">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addUserModalLabel">Thêm Người Dùng</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="addFullname">Họ tên</label>
+                            <input type="text" id="addFullname" class="form-control" name="hoten" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="addEmail">Email</label>
+                            <input type="email" id="addEmail" class="form-control" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="addDob">Ngày sinh</label>
+                            <input type="date" id="addDob" class="form-control" name="ng_sinh" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="addAddress">Địa chỉ</label>
+                            <input type="text" id="addAddress" class="form-control" name="dchi" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="addPhone">Số điện thoại</label>
+                            <input type="text" id="addPhone" class="form-control" name="sdt" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="addImage">Hình ảnh</label>
+                            <input type="file" id="addImage" class="form-control" name="anh" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-primary">Thêm Người Dùng</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Editing User -->
+    <div id="editUserModal" class="modal fade" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form th:action="@{/admin/saveUser}" method="post" enctype="multipart/form-data">
+                    <input type="hidden" id="editId" name="id">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editUserModalLabel">Sửa Người Dùng</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="editFullname">Họ tên</label>
+                            <input type="text" id="editFullname" class="form-control" name="hoten" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editEmail">Email</label>
+                            <input type="email" id="editEmail" class="form-control" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editDob">Ngày sinh</label>
+                            <input type="date" id="editDob" class="form-control" name="ng_sinh" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editAddress">Địa chỉ</label>
+                            <input type="text" id="editAddress" class="form-control" name="dchi" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editPhone">Số điện thoại</label>
+                            <input type="text" id="editPhone" class="form-control" name="sdt" required>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="submit" class="btn btn-primary">Cập Nhật Người Dùng</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+
+
+    <script>
+        // Handle the edit button click
+        $(document).on('click', '.edit', function () {
+            const id = $(this).data('id');
+            const hoten = $(this).data('hoten');
+            const email = $(this).data('email');
+            const ng_sinh = $(this).data('ng_sinh');
+            const dchi = $(this).data('dchi');
+            const sdt = $(this).data('sdt');
+
+            $('#editId').val(id);
+            $('#editFullname').val(hoten);
+            $('#editEmail').val(email);
+            $('#editDob').val(ng_sinh);
+            $('#editAddress').val(dchi);
+            $('#editPhone').val(sdt);
+        });
+    </script>
+</body>
+</html>

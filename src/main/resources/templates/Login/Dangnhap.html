@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đăng Nhập</title>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+<link th:href="@{/CSS/login.css}" rel="stylesheet" type="text/css">
+<style>
+body {
+	background-color: #f8f9fa;
+}
+
+.container {
+	max-width: 400px;
+	margin-top: 100px;
+	padding: 20px;
+	border-radius: 10px;
+	background-color: white;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn-google {
+	background-color: #db4437;
+	color: white;
+}
+
+.btn-google:hover {
+	background-color: #c13526;
+}
+</style>
+</head>
+<body>
+	<div class="container">
+		<h2 class="text-center">Đăng Nhập</h2>
+
+		<!-- Hiển thị thông báo lỗi chung nếu tài khoản hoặc mật khẩu không đúng -->
+		<div th:if="${loginError != null}" class="alert alert-danger">
+			<p th:text="${loginError}"></p>
+		</div>
+
+		<form th:action="@{/login}" method="post">
+			<!-- Trường Email -->
+			<div class="form-group">
+				<label for="email">Tên Đăng Nhập</label> <input type="text"
+					id="email" name="username" class="form-control"
+					th:class="${emailError != null} ? 'form-control is-invalid' : 'form-control'"
+					th:value="${email}" placeholder="Nhập tên đăng nhập">
+				<div class="invalid-feedback" th:if="${emailError != null}">
+					<p th:text="${emailError}"></p>
+				</div>
+			</div>
+
+			<!-- Trường Mật khẩu -->
+			<div class="form-group">
+				<label for="password">Mật Khẩu</label> <input type="password"
+					id="password" name="password" class="form-control"
+					th:class="${passwordError != null} ? 'form-control is-invalid' : 'form-control'"
+					placeholder="Nhập mật khẩu">
+				<div class="invalid-feedback" th:if="${passwordError != null}">
+					<p th:text="${passwordError}"></p>
+				</div>
+			</div>
+
+			<!-- Nút Đăng Nhập -->
+			<div class="form-group">
+				<button type="submit" class="btn btn-primary btn-block">Đăng
+					Nhập</button>
+			</div>
+		</form>
+
+		<!-- Nút Đăng Nhập bằng Google -->
+		<div class="text-center mb-3">
+			<a href="/oauth2/authorization/google"
+				class="btn btn-google btn-block"> <i class="fab fa-google"></i>
+				Đăng Nhập với Google
+			</a>
+		</div>
+
+
+		<!-- Liên kết chuyển đến trang đăng ký -->
+		<div class="text-center mb-3">
+			<p>
+				Bạn chưa có tài khoản? <a th:href="@{/register}">Đăng Ký</a>
+			</p>
+		</div>
+
+		<!-- Liên kết chuyển đến trang quên mật khẩu -->
+		<div class="text-center">
+			<p>
+				<a th:href="@{/forgot-password}">Quên Mật Khẩu?</a>
+			</p>
+		</div>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<!-- Font Awesome for Google Icon -->
+	<script src="https://kit.fontawesome.com/a076d05399.js"></script>
+</body>
+</html>
