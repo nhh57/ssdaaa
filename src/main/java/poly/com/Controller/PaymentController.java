@@ -87,19 +87,19 @@ public class PaymentController {
         return "redirect:/";
     }
 
-    @PostMapping("/checkout")
-    public String SaveOrder() {
-        try {
-            int userId = getCurrentUserId();
-            log.info("userId::", userId);
-            orderService.save(userId);
-            return "redirect:/order";
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "redirect:/order";
-    }
+//    @PostMapping("/checkout")
+//    public String SaveOrder() {
+//        try {
+//            int userId = getCurrentUserId();
+//            log.info("userId::", userId);
+//            orderService.save(userId);
+//            return "redirect:/order";
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return "redirect:/order";
+//    }
 
 
     // Lấy id của người dùng hiện tại từ Authentication

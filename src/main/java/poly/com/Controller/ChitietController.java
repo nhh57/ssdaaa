@@ -118,7 +118,7 @@ public class ChitietController {
             model.addAttribute("cartItemCount", cartItemCount); // Đưa số lượng sản phẩm vào model
         }
 
-        return "Product/Chitiet"; // Trả về view cho trang chi tiết sản phẩm
+        return "Product/ChiTiet"; // Trả về view cho trang chi tiết sản phẩm
     }
     
     private Integer getCurrentUserId() {

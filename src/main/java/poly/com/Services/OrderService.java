@@ -53,7 +53,7 @@ public class OrderService {
             Order_Detail orderDetail = Order_Detail.builder()
                     .order(order)
                     .product(cart.getProduct())
-                    .quantity(cart.getProduct().getQuantity())
+                    .quantity(cart.getQuantity())
                     .unit_price(cart.getProduct().getPrice()).build();
             orderDetailService.saveOrderDetail(orderDetail);
         });

@@ -19,7 +19,7 @@ public class OrderDetailService {
     }
 
 
-    public Order_Detail findOrderDetailByOrderId(int orderId) {
+    public List<Order_Detail> findOrderDetailsByOrderId(int orderId) {
         return repo.findByOrder_Id(orderId);
     }
 }

@@ -10,6 +10,8 @@ import poly.com.Entity.Order_Detail;
 import poly.com.Services.OrderDetailService;
 import poly.com.data.OrderDetailDTO;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/admin")
 public class AdminApiOrderController {
@@ -18,19 +20,22 @@ public class AdminApiOrderController {
     private OrderDetailService orderDetailService;
 
     @GetMapping("/get-order-detail/{id}")
-    public ResponseEntity<OrderDetailDTO> getOrderDetail(@PathVariable int id) {
-        Order_Detail orderDetail = orderDetailService.findOrderDetailByOrderId(id);
-        if (orderDetail != null) {
-            OrderDetailDTO dto = new OrderDetailDTO(
-                    orderDetail.getId(),
-                    orderDetail.getProduct().getId(),
-                    orderDetail.getProduct().getName(),
-                    orderDetail.getUnit_price(),
-                    orderDetail.getQuantity(),
-                    orderDetail.getOrder().getId()
-            );
-            return ResponseEntity.ok(dto);
+    public ResponseEntity<List<OrderDetailDTO>> getOrderDetails(@PathVariable int id) {
+        List<Order_Detail> orderDetails = orderDetailService.findOrderDetailsByOrderId(id);
+        if (!orderDetails.isEmpty()) {
+            List<OrderDetailDTO> dtos = orderDetails.stream()
+                    .map(orderDetail -> new OrderDetailDTO(
+                            orderDetail.getId(),
+                            orderDetail.getProduct().getId(),
+                            orderDetail.getProduct().getName(),
+                            orderDetail.getUnit_price(),
+                            orderDetail.getQuantity(),
+                            orderDetail.getOrder().getId()
+                    ))
+                    .toList();
+            return ResponseEntity.ok(dtos);
         }
         return ResponseEntity.notFound().build();
     }
+
 }

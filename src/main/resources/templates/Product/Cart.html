@@ -11,6 +11,7 @@
             font-family: 'Arial', sans-serif;
             background-color: #f8f9fa;
         }
+
         .container {
             max-width: 900px;
             margin: 30px auto;
@@ -19,22 +20,27 @@
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
+
         .table th {
             background-color: #007bff;
             color: #fff;
         }
+
         .btn-custom {
             background-color: #28a745;
             color: white;
         }
+
         .btn-custom:hover {
             background-color: #218838;
         }
+
         img {
             max-width: 80px;
             height: auto;
             border-radius: 5px;
         }
+
         .total {
             font-size: 20px;
             font-weight: bold;
@@ -44,92 +50,133 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2 class="text-center">Shopping Cart</h2>
+<div class="container">
+    <h2 class="text-center">Shopping Cart</h2>
 
-        <!-- Notifications -->
-        <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
-        <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+    <!-- Notifications -->
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
 
-        <!-- Empty Cart -->
-        <div th:if="${carts.isEmpty()}">
-            <p>Your cart is empty. <a href="/product" class="btn btn-link">Continue Shopping</a></p>
+    <!-- Empty Cart -->
+    <div th:if="${carts.isEmpty()}">
+        <p>Your cart is empty. <a href="/product" class="btn btn-link">Continue Shopping</a></p>
+    </div>
+
+    <!-- Cart Items -->
+    <div th:if="${!carts.isEmpty()}">
+        <form th:action="@{/update-cart}" method="post">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Image</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total Price</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="cartItem : ${carts}">
+                    <td th:text="${cartItem.product.name}">Product Name</td>
+                    <td><img th:src="@{${cartItem.product.image}}" alt="Product Image"></td>
+                    <td>
+                        <input type="number" name="quantity" th:value="${cartItem.quantity}" min="1"
+                               class="form-control"/>
+                    </td>
+                    <td th:text="${#numbers.formatDecimal(cartItem.unit_price, 1, 2)}">Unit Price</td>
+                    <td th:text="${#numbers.formatDecimal(cartItem.quantity * cartItem.unit_price, 1, 2)}">Total Price
+                    </td>
+                    <td>
+                        <a th:href="@{/deleteCart/{id}(id=${cartItem.id})}" class="btn btn-danger btn-sm">
+                            <i class="fa fa-trash"></i> Remove
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </form>
+
+        <!-- Discount Code -->
+        <form th:action="@{/apply-discount}" method="post" class="my-3">
+            <label for="discountCode" class="form-label">Discount Code</label>
+            <div class="input-group">
+                <input type="text" id="discountCode" name="discountCode" class="form-control" placeholder="Enter code">
+                <button class="btn btn-custom" type="submit">Apply</button>
+            </div>
+        </form>
+
+        <!-- Total -->
+        <div class="total">
+            Total Amount: <span th:text="${#numbers.formatDecimal(totalAmount, 1, 2)}">$0.00</span>
         </div>
 
-        <!-- Cart Items -->
-        <div th:if="${!carts.isEmpty()}">
-            <form th:action="@{/update-cart}" method="post">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Product</th>
-                            <th>Image</th>
-                            <th>Quantity</th>
-                            <th>Unit Price</th>
-                            <th>Total Price</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:each="cartItem : ${carts}">
-                            <td th:text="${cartItem.product.name}">Product Name</td>
-                            <td><img th:src="@{${cartItem.product.image}}" alt="Product Image"></td>
-                            <td>
-                                <input type="number" name="quantity" th:value="${cartItem.quantity}" min="1" class="form-control" />
-                            </td>
-                            <td th:text="${#numbers.formatDecimal(cartItem.unit_price, 1, 2)}">Unit Price</td>
-                            <td th:text="${#numbers.formatDecimal(cartItem.quantity * cartItem.unit_price, 1, 2)}">Total Price</td>
-                            <td>
-                                <a th:href="@{/deleteCart/{id}(id=${cartItem.id})}" class="btn btn-danger btn-sm">
-                                    <i class="fa fa-trash"></i> Remove
-                                </a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </form>
-
-            <!-- Discount Code -->
-            <form th:action="@{/apply-discount}" method="post" class="my-3">
-                <label for="discountCode" class="form-label">Discount Code</label>
-                <div class="input-group">
-                    <input type="text" id="discountCode" name="discountCode" class="form-control" placeholder="Enter code">
-                    <button class="btn btn-custom" type="submit">Apply</button>
-                </div>
-            </form>
-
-            <!-- Total -->
-            <div class="total">
-                Total Amount: <span th:text="${#numbers.formatDecimal(totalAmount, 1, 2)}">$0.00</span>
+        <!-- Shipping & Payment -->
+        <form id="paymentForm">
+            <div class="my-4">
+                <h4>Shipping Details</h4>
+                <input type="text" name="fullName" class="form-control mb-2" placeholder="Full Name" required>
+                <input type="text" name="address" class="form-control mb-2" placeholder="Address" required>
+                <input type="text" name="phone" class="form-control mb-2" placeholder="Phone Number" required>
             </div>
 
-            <!-- Shipping & Payment -->
-            <form th:action="@{/checkout}" method="post">
-                <div class="my-4">
-                    <h4>Shipping Details</h4>
-                    <input type="text" name="fullName" class="form-control mb-2" placeholder="Full Name" required>
-                    <input type="text" name="address" class="form-control mb-2" placeholder="Address" required>
-                    <input type="text" name="phone" class="form-control mb-2" placeholder="Phone Number" required>
+            <div>
+                <h4>Payment Options</h4>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" id="creditCard" name="paymentMethod" value="creditCard" required>
+                    <label class="form-check-label" for="creditCard">Credit Card</label>
                 </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" id="paypal" name="paymentMethod" value="paypal">
+                    <label class="form-check-label" for="paypal">PayPal</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" id="cod" name="paymentMethod" value="cashOnDelivery">
+                    <label class="form-check-label" for="cod">Cash on Delivery</label>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 mt-3">Proceed to Checkout</button>
 
-                <div>
-                    <h4>Payment Options</h4>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="creditCard" name="paymentMethod" value="creditCard" required>
-                        <label class="form-check-label" for="creditCard">Credit Card</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="paypal" name="paymentMethod" value="paypal">
-                        <label class="form-check-label" for="paypal">PayPal</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="cod" name="paymentMethod" value="cashOnDelivery">
-                        <label class="form-check-label" for="cod">Cash on Delivery</label>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary w-100 mt-3">Proceed to Checkout</button>
-            </form>
-        </div>
+        </form>
     </div>
+</div>
 </body>
 </html>
+
+
+<script>
+    document.getElementById('paymentForm').addEventListener('submit', async function (event) {
+        event.preventDefault(); // Ngăn chặn hành vi submit mặc định
+
+        const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+
+        try {
+            // Gửi dữ liệu tới API
+            const response = await fetch('/checkout', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    paymentMethod: paymentMethod,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to save order');
+            }
+
+            // Xử lý sau khi lưu
+            if (paymentMethod === 'paypal') {
+                window.location.href =
+                    'https://developer.paypal.com/home/?fbclid=IwY2xjawHKbtBleHRuA2FlbQIxMAABHVYg3FQGYyT9cbaeVsxmdye20ux5Y-i8k0fNsc8gdmemrpExO80YileYeQ_aem_e9HhmSjkGpLIT5Wy8vJBig';
+            } else {
+                // Chuyển hướng tới trang khác nếu cần
+                window.location.href = '/order';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Failed to save the order. Please try again.');
+        }
+    });
+</script>

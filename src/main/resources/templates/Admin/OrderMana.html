@@ -79,23 +79,28 @@
 <div id="editProductModal" class="modal fade" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Chỉnh sửa Sản Phẩm</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-header">
+                <h5 class="modal-title">Chi tiết đơn hàng</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Bảng chi tiết đơn hàng -->
+                <div id="orderDetailsContainer" class="mt-3">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Giá</th>
+                            <th>Số lượng</th>
+                        </tr>
+                        </thead>
+                        <tbody id="orderDetailsBody">
+                        <!-- Dữ liệu sẽ được thêm bằng JavaScript -->
+                        </tbody>
+                    </table>
                 </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="edit-name">Tên sản phẩm:</label>
-                        <input type="text" class="form-control" id="edit-name" name="name" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="edit-price">Giá:</label>
-                        <input type="number" class="form-control" id="edit-price" name="price" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="edit-quantity">Số lượng:</label>
-                        <input type="number" class="form-control" id="edit-quantity" name="quantity" required>
-                    </div>
+            </div>
         </div>
     </div>
 </div>
@@ -103,24 +108,53 @@
 
 <script>
     $(document).ready(function () {
-        // Sự kiện khi mở modal chỉnh sửa sản phẩm
+        // Sự kiện khi mở modal
         $('#editProductModal').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget); // Nút chỉnh sửa sản phẩm
-            var id = button.data('id'); // Lấy ID sản phẩm
-            // Gửi yêu cầu Ajax để lấy thông tin sản phẩm
+            var button = $(event.relatedTarget); // Nút "Edit"
+            var id = button.data('id'); // Lấy ID đơn hàng từ nút
+
+            // Xóa nội dung cũ của bảng (nếu có)
+            $('#orderDetailsBody').empty();
+
+            // Gửi yêu cầu đến API
             $.ajax({
                 url: '/admin/get-order-detail/' + id,
                 method: 'GET',
                 success: function (data) {
-                    // Điền thông tin vào các trường trong modal
-                    console.log("data::", data)
-                    $('#edit-name').val(data.productName);
-                    $('#edit-price').val(data.unitPrice);
-                    $('#edit-quantity').val(data.quantity);
+                    // Kiểm tra nếu trả về danh sách
+                    if (Array.isArray(data)) {
+                        // Lặp qua danh sách và thêm dữ liệu vào bảng
+                        data.forEach(function (orderDetail) {
+                            var row = `
+                            <tr>
+                                <td>${orderDetail.id}</td>
+                                <td>${orderDetail.productName}</td>
+                                <td>${orderDetail.unitPrice} VND</td>
+                                <td>${orderDetail.quantity}</td>
+                            </tr>`;
+                            $('#orderDetailsBody').append(row);
+                        });
+                    } else {
+                        // Nếu không phải danh sách, hiển thị thông báo
+                        $('#orderDetailsBody').append(`
+                        <tr>
+                            <td colspan="4">Không có dữ liệu.</td>
+                        </tr>
+                    `);
+                    }
+                },
+                error: function () {
+                    // Xử lý lỗi khi gọi API
+                    $('#orderDetailsBody').append(`
+                    <tr>
+                        <td colspan="4">Không thể tải dữ liệu chi tiết đơn hàng.</td>
+                    </tr>
+                `);
                 }
             });
         });
     });
+
 </script>
 
 </body>
