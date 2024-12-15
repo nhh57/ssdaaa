@@ -47,6 +47,42 @@
             text-align: right;
             margin-top: 20px;
         }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: none;
+            max-width: 300px;
+        }
+
+        .notification-error {
+            background-color: #dc3545;
+        }
+
+        .notification-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .btn-close:hover {
+            opacity: 0.7;
+        }
     </style>
 </head>
 <body>
@@ -136,19 +172,32 @@
                 </div>
             </div>
             <button type="submit" class="btn btn-primary w-100 mt-3">Proceed to Checkout</button>
-
         </form>
     </div>
 </div>
+
+<!-- Thông báo success hoặc error -->
+<div id="orderNotification" class="notification" style="display: none;">
+    <div class="notification-content">
+        <span id="notificationMessage">Your order has been placed successfully!</span>
+        <button id="closeNotification" class="btn-close">&times;</button>
+    </div>
+</div>
+
 </body>
 </html>
-
-
 <script>
     document.getElementById('paymentForm').addEventListener('submit', async function (event) {
         event.preventDefault(); // Ngăn chặn hành vi submit mặc định
 
         const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+
+        // // Hiển thị thông báo thành công và yêu cầu xác nhận
+        // const confirmation = confirm("Your order has been successfully placed. Do you want to proceed to the payment page?");
+        //
+        // if (!confirmation) {
+        //     return; // Nếu người dùng không xác nhận, ngừng hành động và không chuyển hướng
+        // }
 
         try {
             // Gửi dữ liệu tới API
@@ -166,17 +215,48 @@
                 throw new Error('Failed to save order');
             }
 
-            // Xử lý sau khi lưu
-            if (paymentMethod === 'paypal') {
-                window.location.href =
-                    'https://developer.paypal.com/home/?fbclid=IwY2xjawHKbtBleHRuA2FlbQIxMAABHVYg3FQGYyT9cbaeVsxmdye20ux5Y-i8k0fNsc8gdmemrpExO80YileYeQ_aem_e9HhmSjkGpLIT5Wy8vJBig';
-            } else {
-                // Chuyển hướng tới trang khác nếu cần
-                window.location.href = '/order';
-            }
+            // Hiển thị thông báo thành công
+            await showNotification('Your order has been placed successfully!', 'success');
+
+            // Thêm độ trễ trước khi chuyển hướng
+            setTimeout(() => {
+                // Xử lý sau khi lưu
+                if (paymentMethod === 'paypal') {
+                    window.location.href =
+                        'https://developer.paypal.com/home/?fbclid=IwY2xjawHKbtBleHRuA2FlbQIxMAABHVYg3FQGYyT9cbaeVsxmdye20ux5Y-i8k0fNsc8gdmemrpExO80YileYeQ_aem_e9HhmSjkGpLIT5Wy8vJBig';
+                } else {
+                    // Chuyển hướng tới trang khác nếu cần
+                    window.location.href = '/order';
+                }
+            }, 3000); // Đợi 2 giây trước khi chuyển hướng
         } catch (error) {
             console.error('Error:', error);
-            alert('Failed to save the order. Please try again.');
+            showNotification('Failed to save the order. Please try again.', 'error');
         }
     });
+
+    // Hàm hiển thị thông báo
+    function  showNotification(message, type) {
+        const notification = document.getElementById('orderNotification');
+        const notificationMessage = document.getElementById('notificationMessage');
+
+        // Thay đổi nội dung và kiểu của thông báo
+        notificationMessage.textContent = message;
+        notification.classList.remove('notification-success', 'notification-error');
+        notification.classList.add(type === 'success' ? 'notification-success' : 'notification-error');
+
+        // Hiển thị thông báo
+        notification.style.display = 'block';
+
+        // Tự động đóng thông báo sau 5 giây
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 2000);
+    }
+
+    // Đóng thông báo khi nhấn vào nút đóng
+    document.getElementById('closeNotification').addEventListener('click', function () {
+        document.getElementById('orderNotification').style.display = 'none';
+    });
+
 </script>
