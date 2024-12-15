@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            color: #555;
+        }
+
+        .order-list {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .order-list th, .order-list td {
+            text-align: left;
+            padding: 15px;
+        }
+
+        .order-list th {
+            background-color: #ff6363;
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .order-list tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .order-list tr:hover {
+            background-color: #ffe2e2;
+        }
+
+        .status {
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .status.pending {
+            color: #fff;
+            background-color: #ffa502;
+        }
+
+        .status.completed {
+            color: #fff;
+            background-color: #2ed573;
+        }
+
+        .status.cancelled {
+            color: #fff;
+            background-color: #ff4757;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .actions button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .actions .view {
+            background-color: #1e90ff;
+            color: #fff;
+        }
+
+        .actions .view:hover {
+            background-color: #4682b4;
+        }
+
+        .actions .edit {
+            background-color: #ffa502;
+            color: #fff;
+        }
+
+        .actions .edit:hover {
+            background-color: #e67e22;
+        }
+
+        .actions .delete {
+            background-color: #ff4757;
+            color: #fff;
+        }
+
+        .actions .delete:hover {
+            background-color: #c0392b;
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>User Order List</h1>
+    </div>
+    <table class="order-list">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Order ID</th>
+            <th>Date</th>
+            <th>Total</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order, index   : ${orders}">
+            <td th:text="${index.count}">1</td>
+            <td th:text="${order.id}">#001</td>
+            <td th:text="${order.order_date}">2024-12-14</td>
+            <td th:text="${order.total_amount}">$150.00</td>
+            <td th:text="${order.status}"><span class="status pending">Pending</span></td>
+            <!--            <td class="actions">-->
+            <!--                <button class="view">View</button>-->
+            <!--                <button class="edit">Edit</button>-->
+            <!--                <button class="delete">Delete</button>-->
+            <!--            </td>-->
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

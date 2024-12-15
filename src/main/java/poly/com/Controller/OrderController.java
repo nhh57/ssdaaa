@@ -29,7 +29,7 @@ public class OrderController {
         List<Order> orders = orderService.getAllOrdersByUserId(userId);
 
         model.addAttribute("orders", orders);
-        return "User/order";
+        return "User/orders";
     }
 
 
